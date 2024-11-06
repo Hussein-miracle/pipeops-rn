@@ -17,6 +17,7 @@ import ServicePeriod from "@/components/service-period/service-period";
 import CheckBox from "@/components/check-box/check-box";
 import BoxSelect from "@/components/box-select/box-select";
 import CustomSelect from "@/components/custom-select/custom-select";
+import CustomDatePicker from "@/components/custom-date-picker/custom-date-picker";
 
 const HomePage = () => {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -24,6 +25,7 @@ const HomePage = () => {
   const [selectedLGA, setSelectedLGA] = useState<string | number | undefined>(
     undefined
   );
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedFlexibility, setSelectedFlexibility] = useState<
     "ondate" | "flexible" | undefined
   >();
@@ -34,10 +36,9 @@ const HomePage = () => {
     setSelectedService(service);
   };
 
-
-  const allowProceed =  useMemo(() => {
+  const allowProceed = useMemo(() => {
     return false;
-  },[])
+  }, []);
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -113,6 +114,16 @@ const HomePage = () => {
               </View>
             </View>
 
+            {selectedFlexibility === "ondate" && (
+              <CustomDatePicker
+                selectedDate={selectedDate}
+                onSelectDate={(value) => {
+                  if(value){
+                    setSelectedDate(value);
+                  }
+                }}
+              />
+            )}
             {!!selectedFlexibility && (
               <Pressable
                 style={{ flexDirection: "row", alignItems: "center", gap: 4 }}

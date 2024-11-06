@@ -158,9 +158,8 @@ const CustomSelect = ({
   );
 };
 
-
 const styles = StyleSheet.create({
-  selectButton:{
+  selectButton: {
     borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 16,
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
     minHeight: 52,
     flexDirection: "row",
     justifyContent: "space-between",
-  }
-})
+  },
+});
 
 export default CustomSelect;
