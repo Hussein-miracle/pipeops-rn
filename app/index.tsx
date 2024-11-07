@@ -35,7 +35,6 @@ const HomePage = () => {
   const [selectedFlexibility, setSelectedFlexibility] = useState<
     "ondate" | "flexible" | undefined
   >();
-
   const [timeOfDayRequired, setTimeOfDayRequired] = useState<boolean>(false);
 
   const handleSelectService = (service: Service) => {
