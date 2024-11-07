@@ -11,13 +11,15 @@ const CueBall = ({ enabled  = false}: { enabled?: boolean }) => {
 
 const styles = StyleSheet.create({
   ball: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 1.25,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1,
     borderColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
+    flexDirection:"row",
+    // padding:2,
   },
   cue: {
     backgroundColor: "#fff",

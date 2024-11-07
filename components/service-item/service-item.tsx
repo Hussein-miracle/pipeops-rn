@@ -2,6 +2,7 @@ import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Colors } from "@/constants/Colors";
 import CueBall from "../cue-ball/cue-ball";
+import { moderateScale } from "@/lib/utils";
 
 interface ServiceItemProps {
   selected?: boolean;
@@ -67,13 +68,13 @@ const styles = StyleSheet.create({
   },
   serviceItemContainer: {
     height: 154,
-    width: ((Dimensions.get("screen").width - 40) * 0.5) - 5,
+    width: (Dimensions.get("screen").width - 40) * 0.5 - 10,
     borderRadius: 8,
     backgroundColor: Colors.grey,
     paddingVertical: 14,
     paddingHorizontal: 10,
-
     rowGap: 15,
     // justifyContent: "space-between",
+    // width:"100%"
   }
 });

@@ -2,9 +2,10 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
   ScrollView,
   Pressable,
+  FlatList,
+  Dimensions,
 } from "react-native";
 import React, { useMemo, useState } from "react";
 import { moderateScale } from "@/lib/utils";
@@ -18,6 +19,8 @@ import CheckBox from "@/components/check-box/check-box";
 import BoxSelect from "@/components/box-select/box-select";
 import CustomSelect from "@/components/custom-select/custom-select";
 import CustomDatePicker from "@/components/custom-date-picker/custom-date-picker";
+import CustomTextInput from "@/components/custom-text-input/custom-text-input";
+import Spacer from "@/components/spacer/spacer";
 
 const HomePage = () => {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -25,6 +28,9 @@ const HomePage = () => {
   const [selectedLGA, setSelectedLGA] = useState<string | number | undefined>(
     undefined
   );
+  const [houseAddress, setHouseAddress] = useState<string>("");
+  const [busStop, setBusStop] = useState<string>("");
+  const [landmarks, setLandmarks] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedFlexibility, setSelectedFlexibility] = useState<
     "ondate" | "flexible" | undefined
@@ -36,9 +42,14 @@ const HomePage = () => {
     setSelectedService(service);
   };
 
-  const allowProceed = useMemo(() => {
-    return false;
-  }, []);
+  const allowProceed: boolean = useMemo(() => {
+    return (
+      (!!selectedService?.id &&
+        selectedFlexibility === "ondate" &&
+        !!selectedDate) ||
+      (!!selectedService?.id && selectedFlexibility === "flexible")
+    );
+  }, [selectedService, selectedFlexibility, selectedDate]);
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -50,8 +61,12 @@ const HomePage = () => {
           </Text>
 
           <View style={styles.content}>
-            <View style={styles.serviceItemList}>
-              {serviceItems.map((serviceItem) => {
+            <FlatList
+              data={serviceItems}
+              horizontal
+              // style={{flex:1}}
+              contentContainerStyle={{ gap: 10 }}
+              renderItem={({ item: serviceItem }) => {
                 return (
                   <ServiceItem
                     selected={selectedService?.id === serviceItem.id}
@@ -63,62 +78,108 @@ const HomePage = () => {
                     }}
                   />
                 );
-              })}
-            </View>
+              }}
+            />
 
-            <View style={{ gap: 4 }}>
-              <Text>Where do you want the task done?</Text>
+            {!!selectedService && selectedService?.id === "si1" && (
+              <View style={{ gap: 2 }}>
+                <Text>Where do you want the task done?</Text>
 
-              <CustomSelect
-                options={lgas}
-                placeholder="Local Government"
-                selectedValue={selectedLGA}
-                onSelect={(value) => {
-                  setSelectedLGA(value);
-                }}
-                labelKey={"label"}
-                valueKey={"value"}
-              />
-              <View
-                style={{ flexDirection: "row", gap: 12, alignItems: "center" }}
-              ></View>
-            </View>
-
-            <View style={{ gap: 4 }}>
-              <Text>When do you need this done?</Text>
-              <View
-                style={{ flexDirection: "row", gap: 12, alignItems: "center" }}
-              >
-                <BoxSelect
-                  title={"On date"}
-                  checked={selectedFlexibility === "ondate"}
-                  onPress={() => {
-                    if (selectedFlexibility === "ondate") {
-                      setSelectedFlexibility(undefined);
-                      return;
-                    }
-                    setSelectedFlexibility("ondate");
+                <CustomSelect
+                  options={lgas}
+                  placeholder="Local Government"
+                  selectedValue={selectedLGA}
+                  onSelect={(value) => {
+                    setSelectedLGA(value);
                   }}
-                />
-                <BoxSelect
-                  title="I'm flexible"
-                  checked={selectedFlexibility === "flexible"}
-                  onPress={() => {
-                    if (selectedFlexibility === "flexible") {
-                      setSelectedFlexibility(undefined);
-                      return;
-                    }
-                    setSelectedFlexibility("flexible");
-                  }}
+                  labelKey={"label"}
+                  valueKey={"value"}
                 />
               </View>
-            </View>
+            )}
+
+            {!!selectedLGA && (
+              <CustomTextInput
+                keyboardType="default"
+                returnKeyType="done"
+                placeholder="House Address"
+                value={houseAddress}
+                onInputDone={(text) => {
+                  setHouseAddress(text);
+                }}
+              />
+            )}
+
+            {!!houseAddress.trim() && (
+              <CustomTextInput
+                keyboardType="default"
+                returnKeyType="done"
+                placeholder="Closest bus stop"
+                value={busStop}
+                onInputDone={(text) => {
+                  setBusStop(text);
+                }}
+              />
+            )}
+
+            {!!houseAddress && !!busStop && (
+              <CustomTextInput
+                keyboardType="default"
+                returnKeyType="done"
+                placeholder="Landmarks"
+                value={landmarks}
+                onInputDone={(text) => {
+                  setLandmarks(text);
+                }}
+              />
+            )}
+
+            {((!!houseAddress &&
+              !!landmarks &&
+              !!busStop &&
+              !!selectedService &&
+              selectedService?.id === "si1") ||
+              (!!selectedService?.id && selectedService?.id === "si2")) && (
+              <View style={{ gap: 4 }}>
+                <Text>When do you need this done?</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 12,
+                    alignItems: "center",
+                  }}
+                >
+                  <BoxSelect
+                    title={"On date"}
+                    checked={selectedFlexibility === "ondate"}
+                    onPress={() => {
+                      if (selectedFlexibility === "ondate") {
+                        setSelectedFlexibility(undefined);
+                        return;
+                      }
+                      setSelectedFlexibility("ondate");
+                    }}
+                  />
+                  <BoxSelect
+                    title="I'm flexible"
+                    checked={selectedFlexibility === "flexible"}
+                    onPress={() => {
+                      if (selectedFlexibility === "flexible") {
+                        setSelectedFlexibility(undefined);
+                        return;
+                      }
+                      setSelectedFlexibility("flexible");
+                    }}
+                  />
+                </View>
+              </View>
+            )}
 
             {selectedFlexibility === "ondate" && (
               <CustomDatePicker
                 selectedDate={selectedDate}
                 onSelectDate={(value) => {
-                  if(value){
+                  if (value) {
                     setSelectedDate(value);
                   }
                 }}
@@ -158,9 +219,10 @@ const HomePage = () => {
             )}
           </View>
 
-          <View style={{ marginTop: 107 }}>
-            <PrimaryButton title="Continue" disabled={!allowProceed} />
-          </View>
+          <Spacer size={100} />
+
+          <PrimaryButton title="Continue" disabled={!allowProceed} />
+          <Spacer size={40} />
         </View>
       </View>
     </ScrollView>
@@ -171,7 +233,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    height: "100%",
+    height: Dimensions.get("window").height,
     paddingTop: 56,
     paddingHorizontal: 20,
     backgroundColor: "#fff",

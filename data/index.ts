@@ -14,7 +14,7 @@ export const serviceItems:Service[] = [
     description:"Select this if you are more happy to go to the registered business address",
     id:"si2"
   },
-]
+];
 
 
 export const serviceTimes:Array<Period  & { icon?:((props: SvgProps) => ReactNode)}> = [
@@ -60,5 +60,16 @@ export  const lgas = [
   {
     label:"Ikeja",
     value:"ikeja",
+  },
+]
+
+export  const busStops = [
+  {
+    label:"Oluyole Elebu",
+    value:"idnkd",
+  },
+  {
+    label:"Ikorodu Garage",
+    value:"ikd",
   },
 ]

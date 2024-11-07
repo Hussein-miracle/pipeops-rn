@@ -28,6 +28,9 @@ export interface CustomSelectProps {
   labelKey: string;
   /** Define valueKey to options */
   valueKey: string;
+
+    /**  hide or show the select arrow/chevron */
+  showSelectIcon?:boolean;
 }
 
 /** Customizable Select Component :) options receive any data type and converter into label and value to render  */
@@ -39,6 +42,7 @@ const CustomSelect = ({
   placeholder = "Select an option",
   labelKey,
   valueKey,
+  showSelectIcon = true,
 }: CustomSelectProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -94,7 +98,7 @@ const CustomSelect = ({
             : placeholder}
         </Text>
 
-        <ArrowUpDownIcon
+{showSelectIcon &&        <ArrowUpDownIcon
           width={24}
           height={24}
           style={{
@@ -104,7 +108,7 @@ const CustomSelect = ({
             right: 10,
             pointerEvents: "none",
           }}
-        />
+        />}
       </TouchableOpacity>
 
       {/* Dropdown modal */}
@@ -119,7 +123,7 @@ const CustomSelect = ({
           >
             <View
               style={{
-                top: dropdownPosition.y,
+                top: dropdownPosition.y - 25,
                 left: dropdownPosition.x,
                 width: dropdownPosition.width,
                 shadowOpacity: 0.2,

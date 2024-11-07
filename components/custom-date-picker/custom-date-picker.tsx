@@ -1,10 +1,19 @@
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from "@react-native-community/datetimepicker";
 import React, { Fragment, useState } from "react";
 import { CalendarIcon } from "../icons";
 import { Colors } from "@/constants/Colors";
+import dayjs from "dayjs";
 
 interface CustomDatePickerProps {
   selectedDate?: Date | null;
@@ -20,7 +29,7 @@ const CustomDatePicker = ({
   const [isFocused, setIsFocused] = useState(false);
   const [show, setShow] = useState(false);
 
-  const onChange = (event: any, selectedDate?: Date | undefined) => {
+  const onChange = (_event: unknown, selectedDate?: Date | undefined) => {
     setShow(false);
     if (selectedDate) {
       onSelectDate?.(selectedDate);
@@ -55,31 +64,54 @@ const CustomDatePicker = ({
         onPress={() => {
           if (Platform.OS === "android") {
             showModeAndoid();
-            setIsFocused(true)
+            setIsFocused(true);
           } else {
             setShow(!show);
             setIsFocused(!isFocused);
           }
         }}
       >
-        <Text  style={{ color: Colors.text, fontWeight: "500", fontSize: 14 }}>
+        <Text style={{ color: Colors.text, fontWeight: "500", fontSize: 14 }}>
           {" "}
           {selectedDate
-            ? new Date(selectedDate).toLocaleDateString()
+            ? dayjs(new Date(selectedDate).toISOString()).format("DD-MM-YYYY")
             : placeholder ?? "Select Date"}
         </Text>
 
         <CalendarIcon width={24} height={24} />
       </Pressable>
       {show && Platform.OS === "ios" && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={selectedDate as Date}
-          mode={"date"}
-          display="spinner"
-          is24Hour={true}
-          onChange={onChange}
-        />
+        <Modal visible={true} transparent animationType="none">
+          <View
+            style={{
+              backgroundColor: "#FFF",
+              position: "absolute",
+              shadowColor: "#000",
+              padding: 4,
+              borderRadius: 12,
+              shadowOpacity: 0.2,
+              shadowOffset: { width: 0, height: 2 },
+              shadowRadius: 8,
+              elevation: 5,
+              width:
+                Dimensions.get("screen").width -
+                Dimensions.get("screen").width * 0.15,
+
+              alignSelf: "center",
+
+              top: Dimensions.get("screen").height * 0.35,
+            }}
+          >
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={selectedDate as Date}
+              mode={"date"}
+              display="spinner"
+              is24Hour={true}
+              onChange={onChange}
+            />
+          </View>
+        </Modal>
       )}
     </Fragment>
   );
